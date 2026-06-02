@@ -8,17 +8,42 @@ Airmark is a macOS 13+ menu-bar app that puts a watermark on one selected displa
   </a>
 </p>
 
-## How It Works
+## Metrics
+
+- Native app bundle, not Electron.
+- Rust handles tray, state, display selection, overlay placement, and macOS bridges.
+- React renders only the settings UI and watermark content.
+- Settings persist in a small local JSON file.
+- No background server process.
+
+## Architecture
 
 ```mermaid
-flowchart TB
-  Tray["Menu bar tray"] --> Menu["Enable / Settings / Display / Quit"]
-  Menu --> Settings["Native macOS settings window"]
-  Settings --> State["Persisted settings"]
-  State --> Overlay["Transparent click-through overlay"]
-  State --> Renderer["React watermark renderer"]
-  Renderer --> Overlay
-  Overlay --> Display["Selected display only"]
+flowchart LR
+  subgraph macOS["macOS 13+"]
+    Tray["Menu Bar Tray"]
+    SettingsWindow["Native Settings Window"]
+    OverlayWindow["Transparent Overlay Window"]
+    LoginItem["Launch at Login"]
+  end
+
+  subgraph App["Airmark App"]
+    Rust["Rust / Tauri Core"]
+    State["Persisted App State"]
+    MacOSShim["macOS Shim\n(AppKit bridge)"]
+    Frontend["React + TypeScript UI"]
+    Renderer["Overlay Renderer"]
+  end
+
+  Tray --> Rust
+  SettingsWindow --> Frontend
+  Frontend --> Rust
+  Rust --> State
+  Rust --> MacOSShim
+  Rust --> OverlayWindow
+  Frontend --> Renderer
+  Renderer --> OverlayWindow
+  LoginItem --> Rust
 ```
 
 ## Features
@@ -32,9 +57,10 @@ flowchart TB
 
 ## Screenshots
 
-![Tray menu](docs/screenshots/tray-menu.png)
-![Text mode settings](docs/screenshots/settings-text.png)
-![Image mode settings](docs/screenshots/settings-image.png)
+![Menu bar](docs/screenshots/menubar.png)
+![Text mode settings](docs/screenshots/textmode.png)
+![Image mode settings](docs/screenshots/imagemode.png)
+![Desktop overlay](docs/screenshots/desktopexample.png)
 
 ## Install
 
