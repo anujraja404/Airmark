@@ -1,24 +1,48 @@
 # Airmark
 
-Airmark is a macOS 13+ menu-bar watermark utility built with Tauri 2, Rust, and React. It runs without a Dock icon, keeps the overlay click-through, and lets you target a single display or choose a display per session from the tray menu.
+Airmark is a macOS 13+ menu-bar app that puts a watermark on one selected display without blocking the keyboard, mouse, or menu bar.
 
-## What It Does
+<p>
+  <a href="https://github.com/anujraja404/airmark/releases/latest">
+    <strong>Download the latest DMG</strong>
+  </a>
+</p>
 
-- Menu-bar app with `Enable/Disable`, `Open Settings`, `Choose Display`, and `Quit`.
-- Persistent settings window with native macOS chrome.
-- Text watermark mode with opacity, text size, and text spacing sliders.
-- Image watermark mode with drag-and-drop, file chooser, and clipboard paste support.
-- Overlay stays off the menu bar and is bound to the selected display work area.
+## How It Works
+
+```mermaid
+flowchart TB
+  Tray["Menu bar tray"] --> Menu["Enable / Settings / Display / Quit"]
+  Menu --> Settings["Native macOS settings window"]
+  Settings --> State["Persisted settings"]
+  State --> Overlay["Transparent click-through overlay"]
+  State --> Renderer["React watermark renderer"]
+  Renderer --> Overlay
+  Overlay --> Display["Selected display only"]
+```
+
+## Features
+
+- Dockless macOS utility.
+- Tray menu for enable/disable, settings, display selection, and quit.
+- Text mode with opacity, size, and spacing controls.
+- Image mode with drag/drop, file picker, and clipboard paste.
 - Settings persist across relaunches.
 - Launch-at-login support.
 
+## Screenshots
+
+![Tray menu](docs/screenshots/tray-menu.png)
+![Text mode settings](docs/screenshots/settings-text.png)
+![Image mode settings](docs/screenshots/settings-image.png)
+
 ## Install
 
-Open the DMG and drag `Airmark.app` into `Applications`:
+1. Open the DMG.
+2. Drag `Airmark.app` into `Applications`.
+3. Launch Airmark from `Applications` or the menu bar.
 
-`src-tauri/target/release/bundle/dmg/Airmark_0.1.0_aarch64.dmg`
-
-## Run In Dev
+## Develop
 
 ```bash
 npm install
@@ -31,68 +55,7 @@ npm run tauri dev
 npm run tauri build
 ```
 
-Release artifacts are written to:
+Release artifacts:
 
 - `src-tauri/target/release/bundle/macos/Airmark.app`
 - `src-tauri/target/release/bundle/dmg/Airmark_0.1.0_aarch64.dmg`
-
-## Sign And Notarize
-
-Set environment variables:
-
-```bash
-export APP_PATH="/Users/macbookpro/Developer/airmark/src-tauri/target/release/bundle/macos/Airmark.app"
-export APPLE_DEV_ID="Developer ID Application: YOUR_NAME (TEAMID)"
-export APPLE_ID="you@example.com"
-export TEAM_ID="TEAMID"
-export APP_SPECIFIC_PASSWORD="xxxx-xxxx-xxxx-xxxx"
-```
-
-Sign:
-
-```bash
-codesign --force --deep --options runtime --timestamp \
-  --sign "$APPLE_DEV_ID" "$APP_PATH"
-codesign --verify --deep --strict --verbose=2 "$APP_PATH"
-```
-
-Package for notarization:
-
-```bash
-ditto -c -k --keepParent "$APP_PATH" /tmp/Airmark.zip
-```
-
-Submit and wait:
-
-```bash
-xcrun notarytool submit /tmp/Airmark.zip \
-  --apple-id "$APPLE_ID" \
-  --team-id "$TEAM_ID" \
-  --password "$APP_SPECIFIC_PASSWORD" \
-  --wait
-```
-
-Staple and verify:
-
-```bash
-xcrun stapler staple "$APP_PATH"
-spctl --assess --type execute --verbose "$APP_PATH"
-```
-
-## Acceptance Checklist
-
-- [ ] App launches without a Dock icon.
-- [ ] Overlay stays disabled until the user confirms setup.
-- [ ] Tray menu exposes enable/disable, settings, display selection, and quit.
-- [ ] Display selection updates the overlay target immediately.
-- [ ] Text mode and image mode both render correctly.
-- [ ] Clipboard image paste accepts copied image data from apps like ChatGPT or Preview.
-- [ ] Settings persist after quit and relaunch.
-- [ ] DMG opens with the standard drag-to-Applications flow.
-
-## Architecture Notes
-
-- Rust owns tray, overlay, display, and app-state logic.
-- Frontend owns settings UI and overlay rendering.
-- macOS-specific AppKit behavior is isolated in `src-tauri/src/macos_shim.rs`.
-
