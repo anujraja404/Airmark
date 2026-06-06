@@ -8,6 +8,12 @@ Airmark is a macOS 13+ menu-bar app that puts a watermark on one selected displa
   </a>
 </p>
 
+<p>
+  <a href="https://anujraja.com/Airmark/">
+    <strong>View the landing page</strong>
+  </a>
+</p>
+
 ## Metrics
 
 - Native app bundle, not Electron.
