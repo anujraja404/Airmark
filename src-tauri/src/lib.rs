@@ -84,7 +84,7 @@ fn quit_app(app: AppHandle) {
 #[tauri::command]
 fn resize_controls_for_mode(app: AppHandle, mode: String) -> Result<(), String> {
     if let Some(controls) = app.get_webview_window(CONTROLS_WINDOW_LABEL) {
-        let height = if mode == "image" { 398.0 } else { 398.0 };
+        let height = if mode == "image" { 340.0 } else { 398.0 };
         controls
             .set_size(LogicalSize::new(430.0, height))
             .map_err(|e| format!("failed to resize settings window: {e}"))?;
