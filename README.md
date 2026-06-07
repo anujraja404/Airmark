@@ -3,7 +3,7 @@
 Airmark is a macOS 13+ menu-bar app that puts a watermark on one selected display without blocking the keyboard, mouse, or menu bar.
 
 <p>
-  <a href="https://github.com/anujraja404/airmark/releases/latest">
+  <a href="https://github.com/anujraja/Airmark/releases/latest">
     <strong>Download the latest DMG</strong>
   </a>
 </p>
