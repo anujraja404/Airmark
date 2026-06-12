@@ -9,7 +9,7 @@ Airmark is a macOS 13+ menu-bar app that puts a watermark on one selected displa
 </p>
 
 <p>
-  <a href="https://anujraja.com/Airmark/">
+  <a href="https://www.anujraja.com/projects/airmark">
     <strong>View the landing page</strong>
   </a>
 </p>
